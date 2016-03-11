@@ -1,0 +1,27 @@
+{
+  "name": "pouchdb-access",
+  "version": "0.0.0",
+  "description": "A PouchDB plugin that provides simple access control for CouchDB databases.",
+  "author": "Tyler Johnson <tyler@tylerjohnson.me>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tyler-johnson/pouchdb-access.git"
+  },
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint src/ test/",
+    "build": "make",
+    "prepublish": "npm run lint && npm run build"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "babel-eslint": "^5.0.0",
+    "babel-preset-es2015-rollup": "^1.1.1",
+    "eslint": "^2.3.0",
+    "rollup": "^0.25.4",
+    "rollup-plugin-babel": "^2.4.0",
+    "tape": "^4.5.1"
+  },
+  "keywords": [],
+  "license": "MIT"
+}
