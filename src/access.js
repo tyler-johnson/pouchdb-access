@@ -330,7 +330,7 @@ export default class Access {
 					let doc = Design.parse(orig);
 					sec = security.clone();
 					Access.play(sec, doc, ops);
-					self._reset(doc);
+					this._reset(doc);
 					doc = Design.compile(doc);
 					if (!isEqual(orig, doc)) return doc;
 				})
