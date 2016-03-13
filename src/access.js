@@ -8,16 +8,25 @@ import {getLevel,hasLevel} from "./levels.js";
 const {Security} = securityPlugin;
 
 export default class Access {
-	constructor(db) {
+	constructor(db, design) {
+		if (db instanceof Access) {
+			design = db.toJSON();
+			db = this.database;
+		}
+
 		// are we talking directly to CouchDB?
 		// this dictates whether or not we can write the access document
 		this.remote = db.adapter === "http";
 		// db to get and put with
 		this.database = db;
 		// holds a copy of the current design doc
-		this.design = Design.parse();
+		this.design = Design.parse(design);
 		// list of write operations on the design
 		this.operations = [];
+	}
+
+	clone() {
+		return new Access(this);
 	}
 
 	_getSecurity() {
