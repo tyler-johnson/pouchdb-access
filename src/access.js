@@ -16,7 +16,7 @@ export default class Access {
 
 		// are we talking directly to CouchDB?
 		// this dictates whether or not we can write the access document
-		this.remote = db.adapter === "http";
+		this.remote = db && db.adapter === "http";
 		// db to get and put with
 		this.database = db;
 		// holds a copy of the current design doc
