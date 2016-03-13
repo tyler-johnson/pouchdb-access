@@ -340,7 +340,7 @@ export default class Access {
 					if (!this.remote) return;
 					let oldSec = security.toJSON();
 					let newSec = sec.toJSON();
-					if (!isEqual(oldSec, newSec)) return newSec.save();
+					if (!isEqual(oldSec, newSec)) return sec.save();
 				});
 			});
 		})
