@@ -135,6 +135,8 @@ export default class Access {
 		return hasLevel(this.design.levels, userCtx, level);
 	}
 
+	get levels() { return this.design.levels; }
+
 	get private() {
 		return this.design.private;
 	}
