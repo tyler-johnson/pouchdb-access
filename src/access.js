@@ -31,7 +31,7 @@ export default class Access {
 			if (e.status !== 404) throw e;
 		}).then((doc) => {
 			return Design.parse(doc);
-		}).bind(this);
+		});
 	}
 
 	_reset(design) {
