@@ -10,8 +10,8 @@ const {Security} = securityPlugin;
 export default class Access {
 	constructor(db, design) {
 		if (db instanceof Access) {
-			design = db.toJSON();
-			db = this.database;
+			design = db.toDesign();
+			db = db.database;
 		}
 
 		// are we talking directly to CouchDB?
@@ -20,7 +20,7 @@ export default class Access {
 		// db to get and put with
 		this.database = db;
 		// holds a copy of the current design doc
-		this.design = Design.parse(design);
+		this.design = this.setDesign(design);
 		// list of write operations on the design
 		this.operations = [];
 	}
@@ -49,7 +49,7 @@ export default class Access {
 	}
 
 	setDesign(doc) {
-		if (doc instanceof Access) doc = doc.toJSON();
+		if (doc instanceof Access) doc = doc.toDesign();
 		this._reset(Design.parse(doc));
 		return this;
 	}
@@ -260,6 +260,13 @@ export default class Access {
 	}
 
 	toJSON() {
+		return {
+			private: this.private,
+			levels: this.levels
+		};
+	}
+
+	toDesign() {
 		return Design.compile(this.design);
 	}
 
