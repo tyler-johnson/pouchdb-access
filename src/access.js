@@ -10,19 +10,19 @@ const {Security} = securityPlugin;
 export default class Access {
 	constructor(db, design) {
 		if (db instanceof Access) {
-			design = db.toJSON();
-			db = this.database;
+			design = db.toDesign();
+			db = db.database;
 		}
 
+		// list of write operations on the design
+		this.operations = [];
 		// are we talking directly to CouchDB?
 		// this dictates whether or not we can write the access document
 		this.remote = db && db.adapter === "http";
 		// db to get and put with
 		this.database = db;
-		// holds a copy of the current design doc
-		this.design = Design.parse(design);
-		// list of write operations on the design
-		this.operations = [];
+		// set the current design
+		this.setDesign(design);
 	}
 
 	clone() {
@@ -49,7 +49,7 @@ export default class Access {
 	}
 
 	setDesign(doc) {
-		if (doc instanceof Access) doc = doc.toJSON();
+		if (doc instanceof Access) doc = doc.toDesign();
 		this._reset(Design.parse(doc));
 		return this;
 	}
@@ -60,9 +60,7 @@ export default class Access {
 
 	addLevel(name, before) {
 		if (isArray(name)) {
-			name.forEach(function(n) {
-				this.addLevel(n, before);
-			}, this);
+			name.forEach((n) => this.addLevel(n, before));
 			return this;
 		}
 
@@ -80,7 +78,7 @@ export default class Access {
 
 	removeLevel(name) {
 		if (isArray(name)) {
-			name.forEach(this.removeLevel, this);
+			name.forEach((n) => this.removeLevel(n));
 			return this;
 		}
 
@@ -98,16 +96,12 @@ export default class Access {
 		}
 
 		if (isArray(item)) {
-			item.forEach(function(i) {
-				this.setLevel(list, i, level);
-			}, this);
+			item.forEach((i) => this.setLevel(list, i, level));
 			return this;
 		}
 
 		if (typeof item === "object" && item != null && level == null) {
-			forEach(item, function(r, i) {
-				this.setLevel(list, i, r);
-			}, this);
+			forEach(item, (r, i) => this.setLevel(list, i, r));
 			return this;
 		}
 
@@ -230,9 +224,7 @@ export default class Access {
 	_play(op) {
 		// loop through operations
 		if (isArray(op)) {
-			op.forEach(function(o) {
-				this._play(o, true);
-			}, this);
+			op.forEach((o) => this._play(o, true));
 		}
 
 		// only apply datacore operations
@@ -243,9 +235,7 @@ export default class Access {
 
 	static play(security, design, op) {
 		if (isArray(op)) {
-			op.forEach(function(o) {
-				Access.play(security, design, o);
-			});
+			op.forEach((o) => Access.play(security, design, o));
 			return;
 		}
 
@@ -260,6 +250,13 @@ export default class Access {
 	}
 
 	toJSON() {
+		return {
+			private: this.private,
+			levels: this.levels
+		};
+	}
+
+	toDesign() {
 		return Design.compile(this.design);
 	}
 
@@ -269,7 +266,7 @@ export default class Access {
 		if (!save) {
 			save = this._deferral = {};
 			let clean = () => delete this._deferral;
-			save.promise = new Promise(function(resolve, reject) {
+			save.promise = new Promise((resolve, reject) => {
 				save.resolve = resolve;
 				save.reject = reject;
 			}).then(clean, (e) => {
