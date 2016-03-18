@@ -60,9 +60,7 @@ export default class Access {
 
 	addLevel(name, before) {
 		if (isArray(name)) {
-			name.forEach(function(n) {
-				this.addLevel(n, before);
-			}, this);
+			name.forEach((n) => this.addLevel(n, before));
 			return this;
 		}
 
@@ -80,7 +78,7 @@ export default class Access {
 
 	removeLevel(name) {
 		if (isArray(name)) {
-			name.forEach(this.removeLevel, this);
+			name.forEach((n) => this.removeLevel(n));
 			return this;
 		}
 
@@ -98,16 +96,12 @@ export default class Access {
 		}
 
 		if (isArray(item)) {
-			item.forEach(function(i) {
-				this.setLevel(list, i, level);
-			}, this);
+			item.forEach((i) => this.setLevel(list, i, level));
 			return this;
 		}
 
 		if (typeof item === "object" && item != null && level == null) {
-			forEach(item, function(r, i) {
-				this.setLevel(list, i, r);
-			}, this);
+			forEach(item, (r, i) => this.setLevel(list, i, r));
 			return this;
 		}
 
@@ -272,7 +266,7 @@ export default class Access {
 		if (!save) {
 			save = this._deferral = {};
 			let clean = () => delete this._deferral;
-			save.promise = new Promise(function(resolve, reject) {
+			save.promise = new Promise((resolve, reject) => {
 				save.resolve = resolve;
 				save.reject = reject;
 			}).then(clean, (e) => {
