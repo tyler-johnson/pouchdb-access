@@ -21,8 +21,8 @@ export default class Access {
 		this.remote = db && db.adapter === "http";
 		// db to get and put with
 		this.database = db;
-		// holds a copy of the current design doc
-		this.design = this.setDesign(design);
+		// set the current design
+		this.setDesign(design);
 	}
 
 	clone() {

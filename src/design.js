@@ -39,6 +39,8 @@ const Design = { // jshint ignore:line
 	},
 	levels: {
 		parse: function(src) {
+			if (isArray(src)) return src;
+
 			var levels = Design.extract(src, "levels");
 			if (!levels) return [];
 
@@ -65,7 +67,9 @@ const Design = { // jshint ignore:line
 		parse: function(validators) {
 			if (!validators) return {};
 			return reduce(validators, function(v, f, n) {
-				v[n] = Design.unexportify(f);
+				v[n] = typeof f === "function" ? f :
+					typeof f === "string" ? Design.unexportify(f) : null;
+					
 				return v;
 			}, {});
 		},
