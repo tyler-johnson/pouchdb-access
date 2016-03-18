@@ -14,6 +14,8 @@ export default class Access {
 			db = db.database;
 		}
 
+		// list of write operations on the design
+		this.operations = [];
 		// are we talking directly to CouchDB?
 		// this dictates whether or not we can write the access document
 		this.remote = db && db.adapter === "http";
@@ -21,8 +23,6 @@ export default class Access {
 		this.database = db;
 		// holds a copy of the current design doc
 		this.design = this.setDesign(design);
-		// list of write operations on the design
-		this.operations = [];
 	}
 
 	clone() {
@@ -230,9 +230,7 @@ export default class Access {
 	_play(op) {
 		// loop through operations
 		if (isArray(op)) {
-			op.forEach(function(o) {
-				this._play(o, true);
-			}, this);
+			op.forEach((o) => this._play(o, true));
 		}
 
 		// only apply datacore operations
@@ -243,9 +241,7 @@ export default class Access {
 
 	static play(security, design, op) {
 		if (isArray(op)) {
-			op.forEach(function(o) {
-				Access.play(security, design, o);
-			});
+			op.forEach((o) => Access.play(security, design, o));
 			return;
 		}
 
