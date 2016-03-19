@@ -1,4 +1,4 @@
-import {assign,isArray,reduce,isEmpty,keys} from "lodash";
+import {clone,assign,isArray,reduce,isEmpty,keys} from "lodash";
 import securityPlugin from "pouchdb-security-helper";
 import hasAccess from "./has-access";
 import {getLevel,hasLevel} from "./levels.js";
@@ -39,17 +39,23 @@ const Design = { // jshint ignore:line
 	},
 	levels: {
 		parse: function(src) {
-			if (isArray(src)) return src;
+			let levels;
 
-			var levels = Design.extract(src, "levels");
-			if (!levels) return [];
+			if (isArray(src)) {
+				levels = src;
+			} else {
+				levels = Design.extract(src, "levels");
+				if (levels) {
+					try { levels = JSON.parse(levels); }
+					catch(e) { e; }
+				}
 
-			try { levels = JSON.parse(levels); }
-			catch(e) { e; }
-			if (!isArray(levels)) return [];
+				if (!isArray(levels)) levels = [];
+			}
 
 			return levels.map(function(lvl) {
 				if (!lvl.name) return;
+				lvl = clone(lvl);
 				lvl.sec = new Security.Level(lvl.sec);
 				return lvl;
 			}).filter(Boolean);
@@ -69,7 +75,7 @@ const Design = { // jshint ignore:line
 			return reduce(validators, function(v, f, n) {
 				v[n] = typeof f === "function" ? f :
 					typeof f === "string" ? Design.unexportify(f) : null;
-					
+
 				return v;
 			}, {});
 		},
