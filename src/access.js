@@ -252,7 +252,9 @@ export default class Access {
 	toJSON() {
 		return {
 			private: this.private,
-			levels: this.levels
+			levels: this.levels.map(({name,sec}) => {
+				return { name, sec: sec.toJSON() };
+			})
 		};
 	}
 

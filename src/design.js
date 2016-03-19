@@ -39,14 +39,19 @@ const Design = { // jshint ignore:line
 	},
 	levels: {
 		parse: function(src) {
-			if (isArray(src)) return src;
+			let levels;
+			
+			if (isArray(src)) {
+				levels = src;
+			} else {
+				levels = Design.extract(src, "levels");
+				if (levels) {
+					try { levels = JSON.parse(levels); }
+					catch(e) { e; }
+				}
 
-			var levels = Design.extract(src, "levels");
-			if (!levels) return [];
-
-			try { levels = JSON.parse(levels); }
-			catch(e) { e; }
-			if (!isArray(levels)) return [];
+				if (!isArray(levels)) levels = [];
+			}
 
 			return levels.map(function(lvl) {
 				if (!lvl.name) return;
@@ -69,7 +74,7 @@ const Design = { // jshint ignore:line
 			return reduce(validators, function(v, f, n) {
 				v[n] = typeof f === "function" ? f :
 					typeof f === "string" ? Design.unexportify(f) : null;
-					
+
 				return v;
 			}, {});
 		},
