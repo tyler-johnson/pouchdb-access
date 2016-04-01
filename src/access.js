@@ -8,7 +8,7 @@ import {getLevel,hasLevel} from "./levels.js";
 const {Security} = securityPlugin;
 
 export default class Access {
-	constructor(db, design) {
+	constructor(db, design, opts={}) {
 		if (db instanceof Access) {
 			design = db.toDesign();
 			db = db.database;
@@ -21,26 +21,16 @@ export default class Access {
 		this.remote = db && db.adapter === "http";
 		// db to get and put with
 		this.database = db;
+		// extract sync method from options
+		this.sync = opts.sync || Access.sync;
+		// set user options directly
+		this.options = opts;
 		// set the current design
 		this.setDesign(design);
 	}
 
 	clone() {
 		return new Access(this);
-	}
-
-	_getSecurity() {
-		if (!this.remote) return Promise.resolve(new Security());
-		let sec = new Security(this.database);
-		return sec.fetch().then(() => sec);
-	}
-
-	_getDesign() {
-		return this.database.get("_design/access").catch((e) => {
-			if (e.status !== 404) throw e;
-		}).then((doc) => {
-			return Design.parse(doc);
-		});
 	}
 
 	_reset(design) {
@@ -52,6 +42,14 @@ export default class Access {
 		if (doc instanceof Access) doc = doc.toDesign();
 		this._reset(Design.parse(doc));
 		return this;
+	}
+
+	_getDesign() {
+		return this.database.get("_design/access").catch((e) => {
+			if (e.status !== 404) throw e;
+		}).then((doc) => {
+			return Design.parse(doc);
+		});
 	}
 
 	fetch() {
@@ -331,28 +329,8 @@ export default class Access {
 			// if there are no operations, we don't need to be here
 			if (!ops.length) return;
 
-			// grab the current security document
-			return this._getSecurity().then((security) => {
-				let sec;
-
-				// apply operations to design
-				return this.database.upsert("_design/access", (orig) => {
-					let doc = Design.parse(orig);
-					sec = security.clone();
-					Access.play(sec, doc, ops);
-					this._reset(doc);
-					doc = Design.compile(doc);
-					if (!isEqual(orig, doc)) return doc;
-				})
-
-				// save security document on remote databases
-				.then(() => {
-					if (!this.remote) return;
-					let oldSec = security.toJSON();
-					let newSec = sec.toJSON();
-					if (!isEqual(oldSec, newSec)) return sec.save();
-				});
-			});
+			// otherwise call sync method
+			return this.sync(ops);
 		})
 
 		// handle errors
@@ -365,6 +343,34 @@ export default class Access {
 			}
 
 			throw e;
+		});
+	}
+
+	static sync(ops) {
+		const security = new Security(this.database);
+		let sec;
+
+		// grab the current security document
+		Promise.resolve(this.remote ? security.fetch() : null)
+
+		// apply operations to design
+		.then(() => {
+			return this.database.upsert("_design/access", (orig) => {
+				let doc = Design.parse(orig);
+				sec = security.clone();
+				Access.play(sec, doc, ops);
+				this._reset(doc);
+				doc = Design.compile(doc);
+				if (!isEqual(orig, doc)) return doc;
+			});
+		})
+
+		// save security document on remote databases
+		.then(() => {
+			if (!this.remote) return;
+			let oldSec = security.toJSON();
+			let newSec = sec.toJSON();
+			if (!isEqual(oldSec, newSec)) return sec.save();
 		});
 	}
 }
