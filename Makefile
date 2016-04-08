@@ -11,21 +11,14 @@ test.js: test/index.js index.js $(TEST)
 	$(BIN)/rollup $< -c > $@
 
 test: test-node test-browser
-	make clean-self
 
-test-node: test.js install-self
+test-node: test.js index.js
 	node $<
 
-test-browser: test.js install-self
+test-browser: test.js index.js
 	$(BIN)/browserify $< --debug | $(BIN)/tape-run
-
-install-self: clean-self
-	ln -s ../ node_modules/pouchdb-access
-
-clean-self:
-	rm -f node_modules/pouchdb-access
 
 clean:
 	rm -f index.js test.js
 
-.PHONY: build clean test test-node test-browser install-self clean-self
+.PHONY: build clean test test-node test-browser
