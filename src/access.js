@@ -1,7 +1,7 @@
 import Design from "./design";
 import Operations from "./operations";
 import securityPlugin from "pouchdb-security-helper";
-import {isArray,forEach,isFunction,isEqual} from "lodash";
+import {forEach,isFunction,isEqual} from "lodash";
 import hasAccess from "./has-access";
 import {getLevel,hasLevel} from "./levels.js";
 
@@ -57,7 +57,7 @@ export default class Access {
 	}
 
 	addLevel(name, before) {
-		if (isArray(name)) {
+		if (Array.isArray(name)) {
 			name.forEach((n) => this.addLevel(n, before));
 			return this;
 		}
@@ -75,7 +75,7 @@ export default class Access {
 	}
 
 	removeLevel(name) {
-		if (isArray(name)) {
+		if (Array.isArray(name)) {
 			name.forEach((n) => this.removeLevel(n));
 			return this;
 		}
@@ -93,7 +93,7 @@ export default class Access {
 			throw new Error("Expecting 'names' or 'roles' for list name.");
 		}
 
-		if (isArray(item)) {
+		if (Array.isArray(item)) {
 			item.forEach((i) => this.setLevel(list, i, level));
 			return this;
 		}
@@ -221,7 +221,7 @@ export default class Access {
 
 	_play(op) {
 		// loop through operations
-		if (isArray(op)) {
+		if (Array.isArray(op)) {
 			op.forEach((o) => this._play(o, true));
 		}
 
@@ -232,7 +232,7 @@ export default class Access {
 	}
 
 	static play(security, design, op) {
-		if (isArray(op)) {
+		if (Array.isArray(op)) {
 			op.forEach((o) => Access.play(security, design, o));
 			return;
 		}

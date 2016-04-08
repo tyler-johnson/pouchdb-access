@@ -1,8 +1,6 @@
-// rollup replaces lodash references with lodash.isArray
-// CouchDB uses a stringified version of the below function that also depends
-// on an isArray method. This wandering code fixes the method naming issue.
-import {isArray as _isArray} from "lodash";
-var isArray = _isArray;
+// rollup replaces lodash references with lodash.isArray or mangles var names
+// CouchDB needs isArray variable exactly, this fixs that
+const isArray = Array.isArray;
 
 // a couchdb design doc function for checking if a user has access given a security context.
 export default function hasAccess(secObj, userCtx) {

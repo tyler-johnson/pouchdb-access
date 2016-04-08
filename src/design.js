@@ -1,4 +1,4 @@
-import {clone,assign,isArray,reduce,isEmpty,keys} from "lodash";
+import {clone,assign,reduce,isEmpty,keys} from "lodash";
 import securityPlugin from "pouchdb-security-helper";
 import hasAccess from "./has-access";
 import {getLevel,hasLevel} from "./levels.js";
@@ -41,7 +41,7 @@ const Design = { // jshint ignore:line
 		parse: function(src) {
 			let levels;
 
-			if (isArray(src)) {
+			if (Array.isArray(src)) {
 				levels = src;
 			} else {
 				levels = Design.extract(src, "levels");
@@ -50,7 +50,7 @@ const Design = { // jshint ignore:line
 					catch(e) { e; }
 				}
 
-				if (!isArray(levels)) levels = [];
+				if (!Array.isArray(levels)) levels = [];
 			}
 
 			return levels.map(function(lvl) {

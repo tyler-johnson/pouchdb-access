@@ -1,7 +1,7 @@
 import test from "tape";
 import PouchDB from "pouchdb";
-import accessPlugin from "pouchdb-access";
 import {Security} from "pouchdb-security-helper";
+const accessPlugin = require("./");
 
 PouchDB.plugin(accessPlugin);
 
