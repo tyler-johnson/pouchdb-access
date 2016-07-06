@@ -4,11 +4,14 @@ import securityPlugin from "pouchdb-security-helper";
 import {forEach,isFunction,isEqual} from "lodash";
 import hasAccess from "./has-access";
 import {getLevel,hasLevel} from "./levels.js";
+import {EventEmitter} from "events";
 
 const {Security} = securityPlugin;
 
-export default class Access {
+export default class Access extends EventEmitter {
 	constructor(db, design, opts={}) {
+		super();
+
 		if (db instanceof Access) {
 			design = db.toDesign();
 			db = db.database;
@@ -38,9 +41,17 @@ export default class Access {
 		this._replay();
 	}
 
+	reset(doc) {
+		if (doc instanceof Access) doc = doc.toDesign();
+		this.operations = [];
+		this._reset(Design.parse(doc));
+		this.emit("reset");
+	}
+
 	setDesign(doc) {
 		if (doc instanceof Access) doc = doc.toDesign();
 		this._reset(Design.parse(doc));
+		this.emit("design", this.design);
 		return this;
 	}
 
@@ -53,6 +64,7 @@ export default class Access {
 	}
 
 	fetch() {
+		this.emit("fetch");
 		return this._getDesign().then((d) => this._reset(d));
 	}
 
@@ -201,7 +213,9 @@ export default class Access {
 
 		// play operation on local data
 		try {
+			this.emit("pre", op);
 			this._play(op);
+			this.emit("post", op);
 		}
 
 		// if there's an error applying, undo the operation
@@ -321,6 +335,7 @@ export default class Access {
 
 	_save() {
 		let ops;
+		this.emit("save");
 
 		return Promise.resolve().then(() => {
 			// immediately copy and remove operations from stack
