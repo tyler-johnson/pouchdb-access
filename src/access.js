@@ -44,7 +44,7 @@ export default class Access extends EventEmitter {
 
   setDesign(doc) {
 		if (doc instanceof Access) doc = doc.toDesign();
-		this._reset(Design.parse(doc));
+		this.reset(Design.parse(doc));
 		this.emit("design", this.design);
 		return this;
 	}
