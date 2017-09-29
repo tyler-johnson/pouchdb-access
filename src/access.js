@@ -114,7 +114,7 @@ export default class Access extends EventEmitter {
 				let doc = Design.parse(orig);
 				sec = security.clone();
 				Transform.play(sec, doc, ops);
-				this._reset(doc);
+				this.reset(doc);
 				doc = Design.compile(doc);
 				if (!isEqual(orig, doc)) return doc;
 			});
