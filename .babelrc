@@ -1,4 +1,8 @@
 {
-	"presets": [ "es2015-rollup" ],
-	"plugins": [ "lodash", "transform-class-properties" ]
+  "presets": [
+    [ "env", { "modules": false } ]
+  ],
+  "plugins": [
+    "transform-class-properties"
+  ]
 }
