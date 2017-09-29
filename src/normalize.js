@@ -1,3 +1,5 @@
+import {isPlainObject} from "lodash";
+
 export default function normalizeValue(value) {
   if (value != null) {
     const type = typeof value;
