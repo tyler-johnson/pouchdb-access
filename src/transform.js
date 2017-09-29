@@ -1,6 +1,7 @@
 import {forEach,isFunction} from "lodash";
 import {EventEmitter} from "events";
 import Operations from "./operations";
+import normalize from "./normalize";
 
 export default class Transform extends EventEmitter {
 	constructor(access, opts = {}) {
@@ -99,7 +100,7 @@ export default class Transform extends EventEmitter {
 			throw new Error("Expecting non-empty string for validation name.");
 		}
 
-		if (typeof fn === "function") fn = fn.toString();
+		fn = normalize(fn);
 		this.push(fn ? "add" : "remove", "filter", { name, fn });
 		return this;
 	}
@@ -109,7 +110,7 @@ export default class Transform extends EventEmitter {
 			throw new Error("Expecting non-empty string for validation name.");
 		}
 
-		if (typeof fn === "function") fn = fn.toString();
+		fn = normalize(fn);
 		this.push(fn ? "add" : "remove", "validate", { name, fn });
 		return this;
 	}
