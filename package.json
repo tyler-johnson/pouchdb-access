@@ -12,26 +12,29 @@
     "lint": "eslint src/ test/",
     "build": "make clean && make",
     "test": "make test",
-    "prepublish": "npm run build",
+    "prepare": "npm run build",
     "autorelease": "autorelease pre && npm publish && autorelease post"
   },
   "dependencies": {
     "lodash": "^4.6.1",
-    "pouchdb-security-helper": "^1.0.0"
+    "pouchdb-security-helper": "^1.1.1"
   },
   "devDependencies": {
     "autorelease": "^1.6.0",
     "autorelease-github": "^1.1.1",
     "autorelease-travis": "^1.2.1",
-    "babel-eslint": "^6.0.0",
-    "babel-preset-es2015-rollup": "^1.1.1",
-    "browserify": "^13.0.0",
-    "eslint": "^2.3.0",
-    "pouchdb": "^5.3.0",
-    "rollup": "^0.25.4",
-    "rollup-plugin-babel": "^2.4.0",
-    "tape": "^4.5.1",
-    "tape-run": "^2.1.3"
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^8.0.1",
+    "babel-plugin-transform-class-properties": "^6.19.0",
+    "babel-preset-env": "^1.6.0",
+    "browserify": "^14.4.0",
+    "eslint": "^4.8.0",
+    "pouchdb": "^6.1.0",
+    "pouchdb-adapter-memory": "^6.1.0",
+    "rollup": "^0.50.0",
+    "rollup-plugin-babel": "^3.0.2",
+    "tape": "^4.6.3",
+    "tape-run": "^3.0.0"
   },
   "keywords": [
     "pouchdb",

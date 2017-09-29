@@ -7,15 +7,15 @@ build: index.js
 index.js: src/index.js $(SRC)
 	$(BIN)/rollup $< -c > $@
 
-test.js: test/index.js index.js $(TEST)
+test.js: test/index.js $(TEST)
 	$(BIN)/rollup $< -c > $@
 
 test: test-node test-browser
 
-test-node: test.js index.js
+test-node: test.js
 	node $<
 
-test-browser: test.js index.js
+test-browser: test.js
 	$(BIN)/browserify $< --debug | $(BIN)/tape-run
 
 clean:

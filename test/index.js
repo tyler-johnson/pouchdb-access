@@ -1,8 +1,10 @@
 import test from "tape";
 import PouchDB from "pouchdb";
 import {Security} from "pouchdb-security-helper";
-const accessPlugin = require("./");
+import memoryAdapter from "pouchdb-adapter-memory";
+import accessPlugin from "../src/index.js";
 
+PouchDB.plugin(memoryAdapter);
 PouchDB.plugin(accessPlugin);
 
 test("access() method returns an access object", (t) => {
@@ -18,8 +20,11 @@ test("parses simplified access info", (t) => {
 	t.plan(6);
 	let db = new PouchDB("tmpdb", { adapter: "memory" });
 	let oaccess = db.access();
-	oaccess.setPrivate();
-	oaccess.addLevel("test");
+
+	oaccess.transform()
+		.setPrivate()
+		.addLevel("test");
+
 	let simple = oaccess.toJSON();
 	t.equals(simple.private, true, "is private");
 	t.ok(Array.isArray(simple.levels), "levels is an array");
