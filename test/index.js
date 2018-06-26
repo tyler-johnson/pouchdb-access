@@ -1,5 +1,5 @@
 import test from "tape";
-import PouchDB from "pouchdb";
+import PouchDB from "pouchdb-core";
 import {Security} from "pouchdb-security-helper";
 import memoryAdapter from "pouchdb-adapter-memory";
 import accessPlugin from "../src/index.js";
