@@ -23,7 +23,7 @@
   "dependencies": {
     "@types/pouchdb-core": "^6.4.1",
     "lodash": "^4.17.10",
-    "pouchdb-security-helper": "^2.1.1"
+    "pouchdb-security-helper": "^2.1.2"
   },
   "devDependencies": {
     "autorelease": "^1.7.1",
